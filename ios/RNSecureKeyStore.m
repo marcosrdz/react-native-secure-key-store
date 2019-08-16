@@ -180,7 +180,9 @@ RCT_EXPORT_METHOD(get:(NSString *)key
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
     @try {
-        [self handleAppUninstallation];
+        if (![key isEqualToString:@"deleteWalletAfterUninstall"]) {
+            [self handleAppUninstallation];
+        }
         NSString *value = [self searchKeychainCopyMatching:key];
         if (value == nil) {
             NSString* errorMessage = @"{\"message\":\"key does not present\"}";
