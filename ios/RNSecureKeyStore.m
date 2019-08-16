@@ -147,6 +147,8 @@ NSError * secureKeyStoreError(NSString *errMsg)
 RCT_EXPORT_METHOD(setResetOnAppUninstallTo:(BOOL) enabled)
 {
     self.resetOnAppUninstall = enabled;
+    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"RnSksIsAppInstalled"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 RCT_EXPORT_METHOD(set: (NSString *)key value:(NSString *)value
@@ -180,9 +182,7 @@ RCT_EXPORT_METHOD(get:(NSString *)key
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
     @try {
-        if (![key isEqualToString:@"deleteWalletAfterUninstall"]) {
-            [self handleAppUninstallation];
-        }
+        [self handleAppUninstallation];
         NSString *value = [self searchKeychainCopyMatching:key];
         if (value == nil) {
             NSString* errorMessage = @"{\"message\":\"key does not present\"}";
